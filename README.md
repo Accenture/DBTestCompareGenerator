@@ -2,6 +2,9 @@
 
 ## Tool for generating database tests that can be run with **[DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare)**
 
+[![Build Status](https://dev.azure.com/DBTestCompare/Build/_apis/build/status/ObjectivityLtd.DBTestCompareGenerator)](https://dev.azure.com/DBTestCompare/Build/_build/latest?definitionId=2&_a=summary)
+[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DBTestCompare/Build/2?compact_message)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=2&_a=summary)
+
 Supported databases: **SQL Server**
 
 It reads the definition of tables to be tested from system tables of your database and generates tests which can be executed by [DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Getting-started) application. 
