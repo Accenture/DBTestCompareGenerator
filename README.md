@@ -11,7 +11,7 @@ SELECT TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME,COLUMN_NAME, IS_NULLABLE, DATA_TY
 FROM INFORMATION_SCHEMA.COLUMNS  
 order by 1,2,3;
 ```
-![table-definition](https://github.com/raczeja/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/images/table-definition.png)
+![table-definition](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/images/table-definition.png)
 
 ### 1. To start using **DBTestCompareGenerator** download the latest [release](https://github.com/ObjectivityLtd/DBTestCompareGenerator/releases) and set connection string to your database in *appsettings.json* file.
 
@@ -110,7 +110,7 @@ FROM
  ``` 
 ### 3. If you want to choose for which tables generate tests, set *ReadExcelFile* to *true* in *appsettings.json* and fill in a list of tables in file */Templates/Table_Config.xlsx*.
 
-![Excel file](https://github.com/raczeja/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/images/Excel.png)
+![Excel file](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/images/Excel.png)
 
 In excel file for e.g huge tables which comparing can be time consuming you can choose in AggregateByClause column of Excel file columns to be aggregated as SUM (for columns in table contains numeric values). 
 
@@ -133,9 +133,9 @@ group by Color
 order by Color;
 ```
 
-### 4. Before execution of your generated tests, you have to replace tokens in connection definition file [cmpSqlResults-config.xml](https://github.com/raczeja/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
+### 4. Before execution of your generated tests, you have to replace tokens in connection definition file [cmpSqlResults-config.xml](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
 
-You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https://github.com/raczeja/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/set-tokens-for-tests.ps1)
+You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/set-tokens-for-tests.ps1)
 
  ```powershell
 .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "localhost|AdventureWorks2008R2|SA|yourStrong22Password"
