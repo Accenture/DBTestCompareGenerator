@@ -140,6 +140,24 @@ jobs:
           targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
           artifact: 'DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion)'
           publishLocation: 'pipeline'
+    - task: CopyFiles@2
+      inputs:
+          sourceFolder: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
+          contents: 'DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion).zip'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: GitHubRelease@1
+      inputs:
+        gitHubConnection: 'github.com_dbtestcompare'
+        repositoryName: '$(Build.Repository.Name)'
+        action: 'edit'
+        target: '$(Build.SourceVersion)'
+        tag: '$(dBTestCompareGeneratorVersion)'
+        title: 'Version $(dBTestCompareGeneratorVersion)'
+        assetUploadMode: 'replace'
+        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogType: 'commitBased'
+        assets: $(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion).zip
 
 - job: BuildOnWindows
   pool:
@@ -166,4 +184,22 @@ jobs:
       inputs:
           targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
           artifact: 'DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion)'
-          publishLocation: 'pipeline'    
+          publishLocation: 'pipeline'
+
+    - task: CopyFiles@2
+      inputs:
+          sourceFolder: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
+          contents: 'DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: GitHubRelease@1
+      inputs:
+        gitHubConnection: 'github.com_dbtestcompare'
+        repositoryName: '$(Build.Repository.Name)'
+        action: 'edit'
+        target: '$(Build.SourceVersion)'
+        tag: '$(dBTestCompareGeneratorVersion)'
+        title: 'Version $(dBTestCompareGeneratorVersion)'
+        assetUploadMode: 'replace'
+        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogType: 'commitBased'
+        assets: $(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip
