@@ -14,7 +14,7 @@ SELECT TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME,COLUMN_NAME, IS_NULLABLE, DATA_TY
 FROM INFORMATION_SCHEMA.COLUMNS  
 order by 1,2,3;
 ```
-![table-definition](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/main/DBTestCompareGenerator/images/table-definition.png)
+![table-definition](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/table-definition.png)
 
 ### 1. To start using **DBTestCompareGenerator** download the latest [release](https://github.com/ObjectivityLtd/DBTestCompareGenerator/releases) and set connection string to your database in *appsettings.json* file.
 
