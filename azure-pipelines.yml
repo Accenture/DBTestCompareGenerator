@@ -20,7 +20,7 @@ schedules:
     displayName: Weekly build
     branches:
       include:
-      - main
+      - master
     always: true 
 
 variables:
