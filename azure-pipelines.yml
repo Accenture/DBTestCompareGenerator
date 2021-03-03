@@ -152,7 +152,7 @@ jobs:
         target: '$(Build.SourceVersion)'
         tag: '$(dBTestCompareGeneratorVersion)'
         title: 'Version $(dBTestCompareGeneratorVersion)'
-        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogCompareToRelease: 'lastNonDraftReleaseByTag'
         changeLogType: 'commitBased'
         assets: '$(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion).zip'
 
@@ -194,6 +194,6 @@ jobs:
         target: '$(Build.SourceVersion)'
         tag: '$(dBTestCompareGeneratorVersion)'
         title: 'Version $(dBTestCompareGeneratorVersion)'
-        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogCompareToRelease: 'lastNonDraftReleaseByTag'
         changeLogType: 'commitBased'
         assets: '$(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip'
