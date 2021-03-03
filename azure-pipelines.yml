@@ -197,3 +197,4 @@ jobs:
         changeLogCompareToRelease: 'lastNonDraftReleaseByTag'
         changeLogType: 'commitBased'
         assets: '$(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip'
+        addChangeLog: false
