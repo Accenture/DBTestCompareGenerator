@@ -1,0 +1,169 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  branches:
+    include:
+    - '*'
+    exclude:
+    - gh-pages
+  paths:
+    exclude:
+    - README.md
+  tags:
+    include:
+    - '*'
+schedules:
+  - cron: "0 18 * * 0"
+    displayName: Weekly build
+    branches:
+      include:
+      - main
+    always: true 
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  dBTestCompareGeneratorVersion: '0.1'
+  SQL_SERVER: 'localhost'
+  SQL_SERVERINSTANCE: 'SQLEXPRESS'
+  SQL_SERVERDBNAME: 'AdventureWorks2008R2'
+  SQL_SERVER_USERNAME: 'sa'
+  SQL_SERVER_PASSWORD: 'yourStrong22Password'
+
+jobs:
+- job: BuildOnLinux
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - task: PowerShell@2
+      condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+      inputs:
+        targetType: 'inline'
+        script: |
+          $tags = git tag --sort=-creatordate   
+          $tag = $tags[0]
+          Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
+
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - script: dotnet build --configuration $(buildConfiguration) /p:Version=$(dBTestCompareGeneratorVersion)
+
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerComposeFile: '**/docker-compose.yml'
+        action: 'Run a Docker Compose command'
+        dockerComposeCommand: 'up -d'
+        
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          
+          ./download-backup-and-jdbc-drivers.ps1
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          echo $(Build.BuildNumber)
+          ./download-latest-release.ps1
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          rm -rfv test-definitions
+          ./restore-backup.ps1
+
+
+    - task: CmdLine@2
+      inputs:
+        script: |
+          cd ./DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0/
+          chmod 777 ./DBTestCompareGenerator
+          chmod 777 ./DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar
+          ls -alR
+          ./DBTestCompareGenerator
+          
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0\
+          .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "$(SQL_SERVER)|$(SQL_SERVERDBNAME)|$(SQL_SERVER_USERNAME)|$(SQL_SERVER_PASSWORD)"
+          $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
+          /usr/bin/java -jar $DBTestCompare
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml'
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
+          ./DBTestCompareGenerator
+          .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "$(SQL_SERVER)|$(SQL_SERVERDBNAME)|$(SQL_SERVER_USERNAME)|$(SQL_SERVER_PASSWORD)"
+          $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
+          /usr/bin/java -jar $DBTestCompare
+        
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml'
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          rm -rfv test-definitions zip deploy jdbc_drivers target test-output
+          rm -f *.bak *.jar *.log
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+          targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
+          artifact: 'DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion)'
+          publishLocation: 'pipeline'
+
+- job: BuildOnWindows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+    - task: PowerShell@2
+      condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+      inputs:
+        targetType: 'inline'
+        script: |
+          $tags = git tag --sort=-creatordate   
+          $tag = $tags[0]
+          Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
+
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - script: dotnet build --configuration $(buildConfiguration) /p:Version=$(dBTestCompareGeneratorVersion)
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+          targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
+          artifact: 'DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion)'
+          publishLocation: 'pipeline'    

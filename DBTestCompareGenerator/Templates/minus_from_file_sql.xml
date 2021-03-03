@@ -1,0 +1,6 @@
+<cmpSqlResultsTest>
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER_Live" diffTableSize="50" fileOutputOn="false" minusQueryIndicatorOn="true">
+        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="Expected" filename="ExpectedTable.sql" />
+        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="Actual" filename="ActualTable.sql" />
+    </compare>
+</cmpSqlResultsTest>
