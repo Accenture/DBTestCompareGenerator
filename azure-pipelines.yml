@@ -147,13 +147,14 @@ jobs:
         gitHubConnection: 'github.com_dbtestcompare'
         repositoryName: '$(Build.Repository.Name)'
         action: 'edit'
+        tagSource: 'gitTag'
+        tagPattern: '\d\.\d'
         target: '$(Build.SourceVersion)'
         tag: '$(dBTestCompareGeneratorVersion)'
         title: 'Version $(dBTestCompareGeneratorVersion)'
-        assetUploadMode: 'replace'
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
-        assets: $(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip
+        assets: '$(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion).zip'
 
 - job: BuildOnWindows
   pool:
@@ -188,10 +189,11 @@ jobs:
         gitHubConnection: 'github.com_dbtestcompare'
         repositoryName: '$(Build.Repository.Name)'
         action: 'edit'
+        tagSource: 'gitTag'
+        tagPattern: '\d\.\d'
         target: '$(Build.SourceVersion)'
         tag: '$(dBTestCompareGeneratorVersion)'
         title: 'Version $(dBTestCompareGeneratorVersion)'
-        assetUploadMode: 'replace'
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
-        assets: $(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip
+        assets: '$(Build.ArtifactStagingDirectory)/DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion).zip'
