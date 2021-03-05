@@ -85,6 +85,9 @@ jobs:
         script: |
           cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
           rm -rfv test-definitions
+          rm -rfv README.md
+          rm -rfv LICENSE-3RD-PARTY
+          rm -rfv LICENSE
           ./restore-backup.ps1
 
 
