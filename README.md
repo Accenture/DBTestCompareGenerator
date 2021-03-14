@@ -34,12 +34,12 @@ order by 1,2,3;
   }
 }
 ```
-and just run *DBTestCompareGenerator.exe* apllication.
+and just run *DBTestCompareGenerator.exe* application.
 
 ### 2. To generate tests for **all tables** in database set *ReadExcelFile* to *false* in *appsettings.json*.
 
 DBTestCompareGenerator by default is creating three types of test:
--	Smoke tests – counting number of rows in each of the table. Number of rows is obtaining form the data base system tables. 
+-	Smoke tests – counting the number of rows in each of the tables. The number of rows is obtaining from the database system tables. 
 Query:
 ```sql
 SELECT 
@@ -115,7 +115,7 @@ FROM
 
 ![Excel file](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/Excel.png)
 
-In excel file for e.g huge tables which comparing can be time consuming you can choose in AggregateByClause column of Excel file columns to be aggregated as SUM (for columns in table contains numeric values). 
+In the excel file for e.g huge tables which comparing can be time-consuming, you can choose in AggregateByClause column of Excel file columns to be aggregated as SUM (for columns in the table contains numeric values). 
 
 ```sql
 SELECT 
@@ -123,7 +123,7 @@ SELECT
 FROM 
  Production.Product
 ```
-Rest of column types listed in *appsettings.json* 
+Rest of the column types listed in *appsettings.json* 
 ```json
 "ColumnTypesToGroupBy": "nvarchar,nchar,datetime,date,bit"
 ```
@@ -136,7 +136,7 @@ group by Color
 order by Color;
 ```
 
-### 4. Before execution of your generated tests, you have to replace tokens in connection definition file [cmpSqlResults-config.xml](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
+### 4. Before execution of your generated tests, you have to replace tokens in the connection definition file [cmpSqlResults-config.xml](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
 
 You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-tokens-for-tests.ps1)
 
