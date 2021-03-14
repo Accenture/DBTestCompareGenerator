@@ -36,7 +36,7 @@ order by 1,2,3;
 ```
 and just run *DBTestCompareGenerator.exe* application on Windows or *DBTestCompareGenerator* on Linux.
 
-Tests should be created in folder *.\test-definitions\*
+Tests should be created in folder *".\test-definitions\"*
 
 ### 2. To generate tests for **all tables** in database set *ReadExcelFile* to *false* in *appsettings.json*.
 
