@@ -34,7 +34,9 @@ order by 1,2,3;
   }
 }
 ```
-and just run *DBTestCompareGenerator.exe* application.
+and just run *DBTestCompareGenerator.exe* application on Windows or *DBTestCompareGenerator* on Linux.
+
+Tests should be created in folder *.\test-definitions\*
 
 ### 2. To generate tests for **all tables** in database set *ReadExcelFile* to *false* in *appsettings.json*.
 
@@ -136,7 +138,13 @@ group by Color
 order by Color;
 ```
 
-### 4. Before execution of your generated tests, you have to replace tokens in the connection definition file [cmpSqlResults-config.xml](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
+### 4. If you want to change any setting in *appsettings.json* you can use script [set-appsettings.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-appsettings.ps1).
+
+ ```powershell
+ .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
+ ```
+
+### 5. Before execution of your generated tests, you have to replace tokens in the connection definition file [cmpSqlResults-config.xml](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
 
 You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-tokens-for-tests.ps1)
 
@@ -144,7 +152,7 @@ You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https
 .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "localhost|AdventureWorks2008R2|SA|yourStrong22Password"
  ```
  
-### 5.To execute tests download the latest version of [DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare) from [here](https://github.com/ObjectivityLtd/DBTestCompare/releases) and [SQL Server JDBC Drivers](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Deploying-licensed-jdbc-drivers-(not-open-source)) 
+### 6.To execute tests download the latest version of [DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare) from [here](https://github.com/ObjectivityLtd/DBTestCompare/releases) and [SQL Server JDBC Drivers](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Deploying-licensed-jdbc-drivers-(not-open-source)) 
 
 ### And run program (Java 8 must be installed first (JDK or JRE)):
 If you set JAVA_HOME variable:
