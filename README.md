@@ -144,7 +144,9 @@ You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https
 .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "localhost|AdventureWorks2008R2|SA|yourStrong22Password"
  ```
  
-To execute tests run program (Java 8 must be installed first (JDK or JRE)):
+### 5.To execute tests download the latest version of [DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare) from [here](https://github.com/ObjectivityLtd/DBTestCompare/releases) and [SQL Server JDBC Drivers](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Deploying-licensed-jdbc-drivers-(not-open-source)) 
+
+### And run program (Java 8 must be installed first (JDK or JRE)):
 If you set JAVA_HOME variable:
 ```
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
