@@ -24,8 +24,7 @@ namespace DBTestCompareGenerator
 
             for (int i = 0; i < data.Rows.Count; i++)
             {
-                var tableSchemaIteration = data.Rows[i]["TABLE_SCHEMA"].ToString();
-                var tableNameIteration = data.Rows[i]["TABLE_NAME"].ToString();
+                var tableSchemaIteration = TableSchemaIteration(data, i, out var tableNameIteration);
                 var (createTest, domain, comment, whereClause, orderByCluse, aggregateByClause) = ReadConfigurationFromXlsx.CheckIfTableInExcel(configList, tableSchemaIteration, tableNameIteration);
                 if (createTest)
                 {
@@ -84,6 +83,14 @@ namespace DBTestCompareGenerator
                     columnsDictionary.Clear();
                 }
             }
+        }
+
+        public static string TableSchemaIteration(DataTable data, int i, out string tableNameIteration)
+        {
+            var tableSchemaIteration = data.Rows[i]["TABLE_SCHEMA"].ToString();
+            tableNameIteration = data.Rows[i]["TABLE_NAME"].ToString();
+            Logger.Debug($"Schema:{tableSchemaIteration} Table: {tableNameIteration}");
+            return tableSchemaIteration;
         }
 
         private static List<QueryDefinition> CreateQuery(string schema, string table, List<Tuple<string, string>> columns, string comment, string whereClause, string orderByCluse, string aggregateByClause)

@@ -18,17 +18,18 @@ namespace DBTestCompareGenerator
 
                 for (int i = 0; i < data.Rows.Count; i++)
                 {
-                    var tableSchemaIteration = data.Rows[i]["TABLE_SCHEMA"].ToString();
-                    var tableNameIteration = data.Rows[i]["TABLE_NAME"].ToString();
+                    var tableSchemaIteration = CompareQuerySqlServer.TableSchemaIteration(data, i, out var tableNameIteration);
                     var (createTest, domain, comment, whereClause, orderByCluse, aggregateByClause) = ReadConfigurationFromXlsx.CheckIfTableInExcel(configList, tableSchemaIteration, tableNameIteration);
                     if (createTest)
                     {
+                        Logger.Debug("Skip iteration");
                         continue;
                     }
 
                     if (i + 1 < data.Rows.Count && tableNameIteration == data.Rows[i + 1]["TABLE_NAME"].ToString() &&
                         tableSchemaIteration == data.Rows[i + 1]["TABLE_SCHEMA"].ToString())
                     {
+                        Logger.Debug("Skip iteration");
                         continue;
                     }
 

@@ -12,7 +12,7 @@ namespace DBTestCompareGenerator
     /// <summary>
     /// Configuration that consume settings file file.
     /// </summary>
-    public class Configuration
+    public static class Configuration
     {
         /// <summary>
         /// Getting appsettings.json file.
