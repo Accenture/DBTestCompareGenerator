@@ -2,3 +2,4 @@
 /.editorconfig
 /DBTestCompareGenerator/bin
 /DBTestCompareGenerator/obj
+.sonarqube

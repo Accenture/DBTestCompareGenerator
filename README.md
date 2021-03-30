@@ -1,3 +1,5 @@
+<img src="DBTestCompareGenerator/images/DBTestCompareGenerator_logo.png" alt="DBTestCompareGenerator_logo" width="200">
+
 # DBTestCompareGenerator
 
 ## Tool for generating database tests that can be run with **[DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare)**
