@@ -115,6 +115,9 @@ FROM
     </compare>
 </cmpSqlResultsTest>
  ``` 
+ 
+You should choose which tests you want to execute Minus or Fetch and disable one type in *appsettings.json*  as both are testing the same but in different way.
+ 
 ### 3. If you want to choose for which tables generate tests, set *ReadExcelFile* to *true* in *appsettings.json* and fill in a list of tables in file */Templates/Table_Config.xlsx*.
 
 ![Excel file](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/Excel.png)
@@ -140,7 +143,7 @@ group by Color
 order by Color;
 ```
 
-### 4. If you want to change any setting in *appsettings.json* you can use script [set-appsettings.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-appsettings.ps1).
+### 4. If you want to change any setting in *appsettings.json* in your CI tool you can use script [set-appsettings.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-appsettings.ps1).
 
  ```powershell
  .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
