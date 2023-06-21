@@ -67,7 +67,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\ne6.0
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
           
           ./download-backup-and-jdbc-drivers.ps1
 
