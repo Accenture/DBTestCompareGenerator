@@ -189,7 +189,7 @@ jobs:
     - task: GitHubRelease@1
       condition: and(succeeded(),startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
       inputs:
-        gitHubConnection: 'github.com_dbtestcompare'
+        gitHubConnection: 'github.com_dbtestcomparegenerator'
         repositoryName: '$(Build.Repository.Name)'
         action: 'edit'
         tagSource: 'gitTag'
