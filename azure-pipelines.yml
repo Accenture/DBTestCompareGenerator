@@ -67,7 +67,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\ne6.0
           
           ./download-backup-and-jdbc-drivers.ps1
 
@@ -75,7 +75,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
           echo $(Build.BuildNumber)
           ./download-latest-release.ps1
 
@@ -83,7 +83,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
           rm -rfv test-definitions
           rm -rfv README.md
           rm -rfv LICENSE-3RD-PARTY
@@ -94,7 +94,7 @@ jobs:
     - task: CmdLine@2
       inputs:
         script: |
-          cd ./DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0/
+          cd ./DBTestCompareGenerator/bin/$(buildConfiguration)/net6.0/
           chmod 777 ./DBTestCompareGenerator
           chmod 777 ./DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar
           ls -alR
@@ -104,7 +104,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0\
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0\
           .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "$(SQL_SERVER)|$(SQL_SERVERDBNAME)|$(SQL_SERVER_USERNAME)|$(SQL_SERVER_PASSWORD)"
           $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
           /usr/bin/java -jar $DBTestCompare
@@ -118,7 +118,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
           .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
           ./DBTestCompareGenerator
           .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "$(SQL_SERVER)|$(SQL_SERVERDBNAME)|$(SQL_SERVER_USERNAME)|$(SQL_SERVER_PASSWORD)"
@@ -134,13 +134,13 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net5.0
+          cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
           rm -rfv test-definitions zip deploy jdbc_drivers target test-output
           rm -f *.bak *.jar *.log
 
     - task: PublishPipelineArtifact@1
       inputs:
-          targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
+          targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net6.0'
           artifact: 'DBTestCompareGeneratorLinux$(dBTestCompareGeneratorVersion)'
           publishLocation: 'pipeline'
 
@@ -182,7 +182,7 @@ jobs:
 
     - task: PublishPipelineArtifact@1
       inputs:
-          targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net5.0'
+          targetPath: './DBTestCompareGenerator/bin/$(buildConfiguration)/net6.0'
           artifact: 'DBTestCompareGeneratorWindows$(dBTestCompareGeneratorVersion)'
           publishLocation: 'pipeline'
 
