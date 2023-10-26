@@ -8,6 +8,8 @@ namespace DBTestCompareGenerator
     {
         private static void Main(string[] args)
         {
+            UnpackDacpac.ExtractDacpacFile();
+            UnpackDacpac.UnpackDacpacFile();
             CopyConfigFiles.CopyConfigFile();
             var configFromExcel = ReadConfigurationFromXlsx.ReadExcelFile();
             CountQuerySqlServer.CreateCountQuery(configFromExcel);

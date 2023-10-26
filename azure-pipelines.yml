@@ -33,6 +33,8 @@ variables:
   SQL_SERVERDBNAME: 'AdventureWorks2008R2'
   SQL_SERVER_USERNAME: 'sa'
   SQL_SERVER_PASSWORD: 'yourStrong22Password'
+  DacpacFolder: '$(Build.SourcesDirectory)\Dacpac'
+  Folder: '$(Build.SourcesDirectory)\Current'
 
 jobs:
 - job: BuildOnLinux
@@ -103,6 +105,7 @@ jobs:
           chmod 777 ./DBTestCompareGenerator
           chmod 777 ./DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar
           ls -alR
+          .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "DacpacFolder|Folder" "$(DacpacFolder)|$(Folder)" $true
           ./DBTestCompareGenerator
           
     - task: PowerShell@2
@@ -126,7 +129,7 @@ jobs:
         targetType: 'inline'
         script: |
           cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
-          .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
+          .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder" "true|$(DacpacFolder)|$(Folder)" $true
           ./DBTestCompareGenerator
           .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "$(SQL_SERVER)|$(SQL_SERVERDBNAME)|$(SQL_SERVER_USERNAME)|$(SQL_SERVER_PASSWORD)"
           $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()

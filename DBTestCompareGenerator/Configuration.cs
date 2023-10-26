@@ -34,6 +34,153 @@ namespace DBTestCompareGenerator
             get { return Configuration.Builder["appSettings:ConnectionStrings:DB"]; }
         }
 
+        public static string DacpacFolder
+        {
+            get
+            {
+                string setting = null;
+                setting = Configuration.Builder["appSettings:DacpacFolder"];
+                Logger.Trace(CultureInfo.CurrentCulture, "DacpacFolder Folder value from settings file '{0}'", setting);
+                return setting;
+            }
+        }
+
+        public static string Database
+        {
+            get { return Configuration.Builder["appSettings:Database"]; }
+        }
+
+        public static string FolderPath
+        {
+            get
+            {
+                string setting = null;
+                setting = Configuration.Builder["appSettings:Folder"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Folder value from settings file '{0}'", setting);
+                return setting;
+            }
+        }
+
+        public static bool ExtractAllTableData
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:ExtractAllTableData"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read ExtractAllTableData '{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static bool ExtractApplicationScopedObjectsOnly
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:ExtractApplicationScopedObjectsOnly"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read ExtractApplicationScopedObjectsOnly '{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static bool VerifyExtraction
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:VerifyExtraction"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read VerifyExtraction'{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static bool IgnoreExtendedProperties
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:IgnoreExtendedProperties"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read IgnoreExtendedProperties '{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static bool IgnorePermissions
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:IgnorePermissions"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read IgnorePermissions '{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static bool SaveAsBaseline
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:SaveAsBaseline"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read IgnorePermissions '{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public static List<string> ColumnTypesToGroupBy
         {
             get
