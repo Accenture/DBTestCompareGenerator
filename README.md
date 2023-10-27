@@ -166,3 +166,17 @@ If you set JAVA_HOME variable:
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 More details can be found [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Getting-started)
+
+### 7. To extract and unpack DACPAC **Microsoft SQL Server DAC Package File** change following settings in *appsettings.json* 
+
+```json
+    "ExtractAllTableData": "false",
+    "ExtractApplicationScopedObjectsOnly": "false",
+    "VerifyExtraction": "false",
+    "IgnoreExtendedProperties": "false",
+    "IgnorePermissions": "false",
+    "SaveAsBaseline": "false",
+    "UnpackDacpac": "true",
+    "DacpacFolder": "c:\\ProjectPath\\Dacpac",
+    "Folder": "c:\\ProjectPath\\Definitions",
+```
