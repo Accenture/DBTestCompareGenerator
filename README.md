@@ -3,6 +3,7 @@
 # DBTestCompareGenerator
 
 ## Tool for generating database tests that can be run with **[DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare)**
+### And extracting and unpacking DACPAC **Microsoft SQL Server DAC Package File** using [DacFx package](https://github.com/microsoft/DacFx).
 
 [![Build Status](https://dev.azure.com/DBTestCompare/Build/_apis/build/status/ObjectivityLtd.DBTestCompareGenerator)](https://dev.azure.com/DBTestCompare/Build/_build/latest?definitionId=2&_a=summary)
 [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DBTestCompare/Build/2?compact_message)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=2&_a=summary)
@@ -165,3 +166,17 @@ If you set JAVA_HOME variable:
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 More details can be found [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Getting-started)
+
+### 7. To extract and unpack DACPAC **Microsoft SQL Server DAC Package File** change following settings in *appsettings.json* 
+
+```json
+    "ExtractAllTableData": "false",
+    "ExtractApplicationScopedObjectsOnly": "false",
+    "VerifyExtraction": "false",
+    "IgnoreExtendedProperties": "false",
+    "IgnorePermissions": "false",
+    "SaveAsBaseline": "false",
+    "UnpackDacpac": "true",
+    "DacpacFolder": "c:\\ProjectPath\\Dacpac",
+    "Folder": "c:\\ProjectPath\\Definitions",
+```

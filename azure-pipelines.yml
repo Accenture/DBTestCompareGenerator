@@ -93,7 +93,6 @@ jobs:
           rm -rfv LICENSE
           ./restore-backup.ps1
 
-
     - task: CmdLine@2
       displayName: set chmod run DBTestCompareGenerator
       inputs:
@@ -104,7 +103,7 @@ jobs:
           chmod 777 ./DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar
           ls -alR
           ./DBTestCompareGenerator
-          
+
     - task: PowerShell@2
       displayName: run DBTestCompare
       inputs:
@@ -126,12 +125,31 @@ jobs:
         targetType: 'inline'
         script: |
           cd .\DBTestCompareGenerator\bin\$(buildConfiguration)\net6.0
-          .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
+          .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder|UnpackDacpac" "true|$(Build.SourcesDirectory)\Dacpac|$(Build.SourcesDirectory)\Current|true" $true
           ./DBTestCompareGenerator
           .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "$(SQL_SERVER)|$(SQL_SERVERDBNAME)|$(SQL_SERVER_USERNAME)|$(SQL_SERVER_PASSWORD)"
           $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
           /usr/bin/java -jar $DBTestCompare
-        
+
+    - task: ArchiveFiles@2
+      displayName: 'Zip generated objects definition'
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)\Current'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish sql files'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        ArtifactName: 'definitions'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish dacpack files'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)\Dacpac/$(SQL_SERVERDBNAME).dacpac'
+        ArtifactName: '$(SQL_SERVERDBNAME)'
+
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
