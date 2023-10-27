@@ -147,7 +147,7 @@ jobs:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish dacpack files'
       inputs:
-        PathtoPublish: '$(Build.SourcesDirectory)\Dacpac\$(SQL_SERVERDBNAME).dacpac'
+        PathtoPublish: '$(Build.SourcesDirectory)\Dacpac/$(SQL_SERVERDBNAME).dacpac'
         ArtifactName: '$(SQL_SERVERDBNAME)'
 
     - task: PublishTestResults@2
