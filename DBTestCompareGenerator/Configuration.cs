@@ -181,6 +181,26 @@ namespace DBTestCompareGenerator
             }
         }
 
+        public static bool UnpackDacpac
+        {
+            get
+            {
+                var setting = Configuration.Builder["appSettings:UnpackDacpac"];
+                Logger.Trace(CultureInfo.CurrentCulture, "Read UnpackDacpac '{0}'", setting);
+                if (string.IsNullOrEmpty(setting))
+                {
+                    return false;
+                }
+
+                if (setting.ToLower(CultureInfo.CurrentCulture).Equals("true"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public static List<string> ColumnTypesToGroupBy
         {
             get
