@@ -131,6 +131,25 @@ jobs:
           $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
           /usr/bin/java -jar $DBTestCompare
 
+    - task: ArchiveFiles@2
+      displayName: 'Zip generated objects definition'
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)\Current'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish sql files'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        ArtifactName: 'definitions'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish dacpack files'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)\Dacpac\$(SQL_SERVERDBNAME).dacpac'
+        ArtifactName: '$(SQL_SERVERDBNAME)'
+
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
