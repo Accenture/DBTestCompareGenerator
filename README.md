@@ -3,6 +3,7 @@
 # DBTestCompareGenerator
 
 ## Tool for generating database tests that can be run with **[DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare)**
+### And extracting and unpacking DACPAC **Microsoft SQL Server DAC Package File** using [DacFx package](https://github.com/microsoft/DacFx).
 
 [![Build Status](https://dev.azure.com/DBTestCompare/Build/_apis/build/status/ObjectivityLtd.DBTestCompareGenerator)](https://dev.azure.com/DBTestCompare/Build/_build/latest?definitionId=2&_a=summary)
 [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DBTestCompare/Build/2?compact_message)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=2&_a=summary)
