@@ -54,7 +54,7 @@ jobs:
         rm -rfv LICENSE
         ./restore-backup.ps1
     - name: set chmod run DBTestCompareGenerator
-      shell: cmd
+      shell: bash
       run: |
         cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
         mv ./DBTestCompare*/DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar  ./
@@ -135,6 +135,7 @@ jobs:
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
     - uses: actions/upload-artifact@v2
+      name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
       with:
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
     - name: Create Release
