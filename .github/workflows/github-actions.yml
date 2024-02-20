@@ -86,11 +86,11 @@ jobs:
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./DBTestCompareGenerator/DBTestCompareGenerator/Current
+        args: zip -r ./DBTestCompareGenerator/DBTestCompareGenerator/${{ github.run_id }}.zip ./DBTestCompareGenerator/DBTestCompareGenerator/Current
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
-        path: ${{ github.workspace }}/${{ github.run_id }}.zip
+        path: ./DBTestCompareGenerator/DBTestCompareGenerator/${{ github.run_id }}.zip
         name: definitions
     - name: Publish dacpack files
       uses: actions/upload-artifact@v2
