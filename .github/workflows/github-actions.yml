@@ -78,7 +78,7 @@ jobs:
       shell: pwsh
       run: |
         cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
-        .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder|UnpackDacpac" "true|${{ github.workspace }}\Dacpac|${{ github.workspace }}\Current|true" $true
+        ./set-appsettings.ps1 "./" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder|UnpackDacpac" "true|${{ github.workspace }}/Dacpac|${{ github.workspace }}/Current|true" $true
         ./DBTestCompareGenerator
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
@@ -86,7 +86,7 @@ jobs:
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./DBTestCompareGenerator
+        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./DBTestCompareGenerator/DBTestCompareGenerator/Current
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
