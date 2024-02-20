@@ -9,7 +9,7 @@ on:
   schedule:
   - cron: '0 18 * * 0'
 env:
-  solution: './*.sln'
+  solution: './DBTestCompareGenerator.sln'
   buildPlatform: Any CPU
   buildConfiguration: Release
   dBTestCompareGeneratorVersion: 0.1.0
@@ -32,7 +32,7 @@ jobs:
     - uses: nuget/setup-nuget@v1
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
-    - run: docker-compose -f "./docker/docker-compose.yml" up -d
+    - run: docker-compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
     - name: download backup and jdbc drivers
       shell: pwsh
       run: |
