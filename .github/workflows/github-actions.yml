@@ -86,7 +86,7 @@ jobs:
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -r /home/runner/work/DBTestCompareGenerator/${{ github.run_id }}.zip /home/runner/work/DBTestCompareGenerator/DBTestCompareGenerator/Current
+        args: zip /home/runner/work/DBTestCompareGenerator/${{ github.run_id }}.zip /home/runner/work/DBTestCompareGenerator/DBTestCompareGenerator/Current -r 
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
