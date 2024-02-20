@@ -1,0 +1,185 @@
+on:
+  push:
+    branches:
+    - '*'
+    paths-ignore:
+    - README.md
+    tags:
+    - '*'
+  schedule:
+  - cron: '0 18 * * 0'
+env:
+  solution: './*.sln'
+  buildPlatform: Any CPU
+  buildConfiguration: Release
+  dBTestCompareGeneratorVersion: 0.1.0
+  SQL_SERVER: localhost
+  SQL_SERVERINSTANCE: SQLEXPRESS
+  SQL_SERVERDBNAME: AdventureWorks2008R2
+  SQL_SERVER_USERNAME: sa
+  SQL_SERVER_PASSWORD: yourStrong22Password
+jobs:
+  BuildOnLinux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        $tags = git tag --sort=-creatordate   
+        $tag = $tags[0]
+        Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
+      shell: powershell
+      if: startsWith(github.ref, 'refs/tags/')
+    - uses: nuget/setup-nuget@v1
+    - run: nuget restore ${{ env.solution }}
+    - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
+    - # "Error: the step 'DockerCompose@0' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'DockerCompose@0' does not have a conversion path yet"
+        #task: DockerCompose@0
+        #inputs:
+        #  containerregistrytype: Container Registry
+        #  dockercomposefile: '**/docker-compose.yml'
+        #  action: Run a Docker Compose command
+        #  dockercomposecommand: up -d
+    - name: download backup and jdbc drivers
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}
+et6.0
+
+        ./download-backup-and-jdbc-drivers.ps1
+      shell: powershell
+    - name: download latest release
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}
+et6.0
+        echo ${{ github.run_number }}
+        ./download-latest-release.ps1
+      shell: powershell
+    - name: restore backup
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}
+et6.0
+        rm -rfv test-definitions
+        rm -rfv README.md
+        rm -rfv LICENSE-3RD-PARTY
+        rm -rfv LICENSE
+        ./restore-backup.ps1
+      shell: powershell
+    - name: set chmod run DBTestCompareGenerator
+      run: |
+        cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
+        mv ./DBTestCompare*/DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar  ./
+        chmod 777 ./DBTestCompareGenerator
+        chmod 777 ./DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar
+        ls -alR
+        ./DBTestCompareGenerator
+      shell: cmd
+    - name: run DBTestCompare
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}
+et6.0\
+        .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
+        $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
+        /usr/bin/java -jar $DBTestCompare
+      shell: powershell
+    - # "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
+        #task: PublishTestResults@2
+        #inputs:
+        #  testresultsformat: JUnit
+        #  testresultsfiles: '**/TEST-*.xml'
+    - name: run DBTestCompare
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}
+et6.0
+        .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder|UnpackDacpac" "true|${{ github.workspace }}\Dacpac|${{ github.workspace }}\Current|true" $true
+        ./DBTestCompareGenerator
+        .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
+        $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
+        /usr/bin/java -jar $DBTestCompare
+      shell: powershell
+    - # 'Note: This is a third party action and currently only supports Linux: https://github.com/marketplace/actions/create-zip-file'
+      name: Zip generated objects definition
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r ${{ github.workspace }}/${{ github.run_id }}.zip ${{ github.workspace }}\Current
+    - name: Publish sql files
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ github.workspace }}/${{ github.run_id }}.zip
+        name: definitions
+    - name: Publish dacpack files
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ github.workspace }}\Dacpac/${{ env.SQL_SERVERDBNAME }}.dacpac
+        name: ${{ env.SQL_SERVERDBNAME }}
+    - # "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'PublishTestResults@2' does not have a conversion path yet"
+        #task: PublishTestResults@2
+        #inputs:
+        #  testresultsformat: JUnit
+        #  testresultsfiles: '**/TEST-*.xml'
+    - run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}
+et6.0
+        rm -rfv test-definitions zip deploy jdbc_drivers target test-output
+        rm -f *.bak *.jar *.log
+      shell: powershell
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+    - # "Error: the step 'GitHubRelease@1' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'GitHubRelease@1' does not have a conversion path yet"
+        #task: GitHubRelease@1
+        #condition: and(succeeded(),startsWith(github.ref, 'refs/tags/'))
+        #inputs:
+        #  githubconnection: github.com_dbtestcomparegenerator
+        #  repositoryname: ${{ github.repository }}
+        #  action: edit
+        #  tagsource: gitTag
+        #  tagpattern: '\d\.\d'
+        #  target: ${{ env.Build.SourceVersion }}
+        #  tag: ${{ env.dBTestCompareGeneratorVersion }}
+        #  title: Version ${{ env.dBTestCompareGeneratorVersion }}
+        #  changelogcomparetorelease: lastNonDraftReleaseByTag
+        #  changelogtype: commitBased
+        #  assets: ${{ github.workspace }}/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+      if: (success() && startsWith(github.ref, 'refs/tags/'))
+  BuildOnWindows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        $tags = git tag --sort=-creatordate   
+        $tag = $tags[0]
+        Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
+      shell: powershell
+      if: startsWith(github.ref, 'refs/tags/')
+    - uses: nuget/setup-nuget@v1
+    - run: nuget restore ${{ env.solution }}
+    - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+    - # "Error: the step 'GitHubRelease@1' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'GitHubRelease@1' does not have a conversion path yet"
+        #task: GitHubRelease@1
+        #condition: and(succeeded(),startsWith(github.ref, 'refs/tags/'))
+        #inputs:
+        #  githubconnection: github.com_dbtestcomparegenerator
+        #  repositoryname: ${{ github.repository }}
+        #  action: edit
+        #  tagsource: gitTag
+        #  tagpattern: '\d\.\d.\d'
+        #  target: ${{ env.Build.SourceVersion }}
+        #  tag: ${{ env.dBTestCompareGeneratorVersion }}
+        #  title: Version ${{ env.dBTestCompareGeneratorVersion }}
+        #  changelogcomparetorelease: lastNonDraftReleaseByTag
+        #  changelogtype: commitBased
+        #  assets: ${{ github.workspace }}/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
+        #  addchangelog: false
+      if: (success() && startsWith(github.ref, 'refs/tags/'))
