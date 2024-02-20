@@ -22,7 +22,7 @@ jobs:
   BuildOnLinux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - shell: pwsh
       run: |
         $tags = git tag --sort=-creatordate   
@@ -83,11 +83,10 @@ jobs:
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
         /usr/bin/java -jar $DBTestCompare
-      
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -qq -r ${{ github.workspace }}/${{ github.run_id }}.zip . -i ./DBTestCompareGenerator/Current
+        args: zip -qq -r ./DBTestCompareGenerator\Current.zip ./DBTestCompareGenerator\Current
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
