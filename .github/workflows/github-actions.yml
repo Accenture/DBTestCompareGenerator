@@ -22,7 +22,7 @@ jobs:
   BuildOnLinux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
     - shell: pwsh
       run: |
         $tags = git tag --sort=-creatordate   
@@ -87,7 +87,7 @@ jobs:
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -qq -r ${{ github.workspace }}/${{ github.run_id }}.zip ./DBTestCompareGenerator/Current
+        args: zip -qq -r ${{ github.workspace }}/${{ github.run_id }}.zip . -i ./DBTestCompareGenerator/Current
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
