@@ -33,7 +33,7 @@ jobs:
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
     - run: docker-compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
-    - name: download backup and jdbc drivers
+    - name: download backup and jdbc driverss
       shell: pwsh
       run: |
         cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
