@@ -57,7 +57,7 @@ jobs:
       shell: bash
       run: |
         cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
-        mv DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar ./
+        mv ./DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar ./
         chmod 777 ./DBTestCompareGenerator
         chmod 777 "DBTestCompare-"*"-SNAPSHOT-jar-with-dependencies.jar"
         ls -alR
