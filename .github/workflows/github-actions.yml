@@ -83,6 +83,8 @@ jobs:
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
         /usr/bin/java -jar $DBTestCompare
+        cd ../../../../
+        compress-archive -path "DBTestCompareGenerator" testt.zip
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
@@ -90,8 +92,13 @@ jobs:
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
+        path: testt.zip
+        name: definitions2
+    - name: Publish sql files
+      uses: actions/upload-artifact@v2
+      with:
         path: ./DBTestCompareGenerator/${{ github.run_id }}.zip
-        name: definitions
+        name: definitionstest
     - name: Publish dacpack files
       uses: actions/upload-artifact@v2
       with:
@@ -136,10 +143,9 @@ jobs:
         name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
     - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: ncipollo/release-action@v1
       with:
+        artifacts: ./release/DBTestCompare$(dBTestCompareVersion).zip
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}  
       if: (success() && startsWith(github.ref, 'refs/tags/'))
