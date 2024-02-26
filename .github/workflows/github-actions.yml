@@ -53,7 +53,7 @@ jobs:
         rm -rfv LICENSE-3RD-PARTY
         rm -rfv LICENSE
         ./restore-backup.ps1
-    - name: set chmod run DBTestCompareGenerator
+    - name: set chmod run DBTestCompareGeneratorr 
       shell: bash
       run: |
         cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
