@@ -85,6 +85,10 @@ jobs:
         /usr/bin/java -jar $DBTestCompare
         cd ../../../../
         compress-archive -path ../DBTestCompareGenerator/Current ${{ github.run_id }}.zip
+    - name: Zip generated objects definition
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./Current
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
