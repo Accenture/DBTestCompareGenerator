@@ -12,7 +12,7 @@ env:
   solution: './DBTestCompareGenerator.sln'
   buildPlatform: Any CPU
   buildConfiguration: Release
-  dBTestCompareGeneratorVersion: 0.1.0
+  dBTestCompareGeneratorVersion: 0.3.0
   SQL_SERVER: localhost
   SQL_SERVERINSTANCE: SQLEXPRESS
   SQL_SERVERDBNAME: AdventureWorks2008R2
