@@ -2,24 +2,23 @@
 
 # DBTestCompareGenerator
 
-## Tool for generating database tests that can be run with **[DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare)**
+## Tool for generating database tests that can be run with **[DBTestCompare](https://github.com/Accenture/DBTestCompare)**
 ### And extracting and unpacking DACPAC **Microsoft SQL Server DAC Package File** using [DacFx package](https://github.com/microsoft/DacFx).
 
-[![Build Status](https://dev.azure.com/DBTestCompare/Build/_apis/build/status/ObjectivityLtd.DBTestCompareGenerator)](https://dev.azure.com/DBTestCompare/Build/_build/latest?definitionId=2&_a=summary)
-[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DBTestCompare/Build/2?compact_message)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=2&_a=summary)
+![DBTestCompare Build](https://github.com/Accenture/DBTestCompareGenerator/actions/workflows/github-actions.yml/badge.svg)
 
 Supported databases: **SQL Server**
 
-It reads the definition of tables to be tested from system tables of your database and generates tests which can be executed by [DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Getting-started) application. 
+It reads the definition of tables to be tested from system tables of your database and generates tests which can be executed by [DBTestCompare](https://github.com/Accenture/DBTestCompare/wiki/Getting-started) application. 
 
 ```sql
 SELECT TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME,COLUMN_NAME, IS_NULLABLE, DATA_TYPE 
 FROM INFORMATION_SCHEMA.COLUMNS  
 order by 1,2,3;
 ```
-![table-definition](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/table-definition.png)
+![table-definition](https://github.com/Accenture/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/table-definition.png)
 
-### 1. To start using **DBTestCompareGenerator** download the latest [release](https://github.com/ObjectivityLtd/DBTestCompareGenerator/releases) and set connection string to your database in *appsettings.json* file.
+### 1. To start using **DBTestCompareGenerator** download the latest [release](https://github.com/Accenture/DBTestCompareGenerator/releases) and set connection string to your database in *appsettings.json* file.
 
 ```json
 {
@@ -69,7 +68,7 @@ SELECT
     </compare>
 </cmpSqlResultsTest>
  ``` 
--	[Fetch](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Fetch) tests – comparing two queries in DBTestCompare tool memory (between any two databases)
+-	[Fetch](https://github.com/Accenture/DBTestCompare/wiki/Fetch) tests – comparing two queries in DBTestCompare tool memory (between any two databases)
 ```sql
 SELECT 
 "BusinessEntityID", 
@@ -88,7 +87,7 @@ order by BusinessEntityID;
     </compare>
 </cmpSqlResultsTest>
  ``` 
--	[Minus](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Minus) test - compare two queries by db engine (on one server) using MINUS/EXCEPT Sql operator
+-	[Minus](https://github.com/Accenture/DBTestCompare/wiki/Minus) test - compare two queries by db engine (on one server) using MINUS/EXCEPT Sql operator
 ```sql
 SELECT 
 "AddressTypeID" , 
@@ -121,7 +120,7 @@ You should choose which tests you want to execute Minus or Fetch and disable one
  
 ### 3. If you want to choose for which tables generate tests, set *ReadExcelFile* to *true* in *appsettings.json* and fill in a list of tables in file */Templates/Table_Config.xlsx*.
 
-![Excel file](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/Excel.png)
+![Excel file](https://github.com/Accenture/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/images/Excel.png)
 
 In the excel file for e.g huge tables which comparing can be time-consuming, you can choose in AggregateByClause column of Excel file columns to be aggregated as SUM (for columns in the table contains numeric values). 
 
@@ -144,28 +143,28 @@ group by Color
 order by Color;
 ```
 
-### 4. If you want to change any setting in *appsettings.json* in your CI tool you can use script [set-appsettings.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-appsettings.ps1).
+### 4. If you want to change any setting in *appsettings.json* in your CI tool you can use script [set-appsettings.ps1](https://github.com/Accenture/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-appsettings.ps1).
 
  ```powershell
  .\set-appsettings.ps1 ".\" "appsettings.json" "appSettings" "ReadExcelFile" "true" $true
  ```
 
-### 5. Before execution of your generated tests, you have to replace tokens in the connection definition file [cmpSqlResults-config.xml](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
+### 5. Before execution of your generated tests, you have to replace tokens in the connection definition file [cmpSqlResults-config.xml](https://github.com/Accenture/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/Templates/cmpSqlResults-config.xml)
 
-You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https://github.com/ObjectivityLtd/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-tokens-for-tests.ps1)
+You can use for that attached PowerShell script [set-tokens-for-tests.ps1](https://github.com/Accenture/DBTestCompareGenerator/blob/master/DBTestCompareGenerator/set-tokens-for-tests.ps1)
 
  ```powershell
 .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "localhost|AdventureWorks2008R2|SA|yourStrong22Password"
  ```
  
-### 6.To execute tests download the latest version of [DBTestCompare](https://github.com/ObjectivityLtd/DBTestCompare) from [here](https://github.com/ObjectivityLtd/DBTestCompare/releases) and [SQL Server JDBC Drivers](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Deploying-licensed-jdbc-drivers-(not-open-source)) 
+### 6.To execute tests download the latest version of [DBTestCompare](https://github.com/Accenture/DBTestCompare) from [here](https://github.com/Accenture/DBTestCompare/releases) and [SQL Server JDBC Drivers](https://github.com/Accenture/DBTestCompare/wiki/Deploying-licensed-jdbc-drivers-(not-open-source)) 
 
 ### And run program (Java 8 must be installed first (JDK or JRE)):
 If you set JAVA_HOME variable:
 ```
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-More details can be found [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Getting-started)
+More details can be found [here](https://github.com/Accenture/DBTestCompare/wiki/Getting-started)
 
 ### 7. To extract and unpack DACPAC **Microsoft SQL Server DAC Package File** change following settings in *appsettings.json* 
 
