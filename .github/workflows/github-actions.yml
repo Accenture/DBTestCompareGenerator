@@ -144,12 +144,13 @@ jobs:
         name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
     - shell: powershell
-      run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+      run: |
+        compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
     - name: Create Release Windows
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ../DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+        artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
         tag: DBTestCompareGeneratorWindows_${{ env.dBTestCompareGeneratorVersion }}
         name: "DBTestCompareGeneratorWindows Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
