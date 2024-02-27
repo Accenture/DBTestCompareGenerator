@@ -171,7 +171,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.last_release.outputs.url }}"
-        asset_path: /DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
+        asset_path: ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
         asset_name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
         asset_content_type: application/zip
       if: success() && startsWith(github.ref, 'refs/tags/')
