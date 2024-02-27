@@ -122,6 +122,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+        name: "Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
   BuildOnWindows:
@@ -148,6 +149,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+        artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
+        name: "Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
