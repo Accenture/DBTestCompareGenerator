@@ -158,16 +158,19 @@ jobs:
     - shell: powershell
       run: |
         compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
-    - name: Gets latest created release info
-      id: latest_release_info
-      uses: jossef/action-latest-release-info@v1.2.2
+    - name: "call action"
+      id: last_release
+      uses: InsonusK/get-latest-release@v1.0.1
+      with:
+        myToken: ${{ github.token }}
+        view_top: 1
       if: success() && startsWith(github.ref, 'refs/tags/')
     - name: upload linux artifact
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.latest_release_info.outputs.upload_url }}
+        upload_url: ${{ steps.last_release.outputs.url }}"
         asset_path: /DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
         asset_name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
         asset_content_type: application/zip
