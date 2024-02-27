@@ -44,7 +44,7 @@ jobs:
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
     - run: docker-compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
-    - name: download backup and jdbc driverss
+    - name: download backup and jdbc drivers
       shell: pwsh
       run: |
         cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
@@ -158,12 +158,16 @@ jobs:
     - shell: powershell
       run: |
         compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+    - name: Gets latest created release info
+      id: latest_release_info
+      uses: jossef/action-latest-release-info@v1.2.2
+      if: success() && startsWith(github.ref, 'refs/tags/')
     - name: upload linux artifact
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ steps.latest_release_info.outputs.upload_url }}
         asset_path: /DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
         asset_name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
         asset_content_type: application/zip
