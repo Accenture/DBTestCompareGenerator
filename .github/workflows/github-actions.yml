@@ -111,17 +111,19 @@ jobs:
       with:
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
         name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}
+    - shell: pwsh
+      run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
     - name: check files
       shell: bash
       run: |
         ls -alR
-    - name: Create Release
+    - name: Create Release Linux
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
-        tag: ${{ env.dBTestCompareGeneratorVersion }}
-        name: "Version ${{ env.dBTestCompareGeneratorVersion }}"
+        artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+        tag: DBTestCompareGeneratorLinux_${{ env.dBTestCompareGeneratorVersion }}
+        name: "DBTestCompareGeneratorLinux Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
   BuildOnWindows:
@@ -141,19 +143,14 @@ jobs:
       with:
         name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
-    - name: Create Release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: ./release/DBTestCompare$(dBTestCompareVersion).zip
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}  
-      if: (success() && startsWith(github.ref, 'refs/tags/'))
-    - name: Create Release
+    - shell: powershell
+      run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+    - name: Create Release Windows
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
-        tag: ${{ env.dBTestCompareGeneratorVersion }}
-        name: "Version ${{ env.dBTestCompareGeneratorVersion }}"
+        artifacts: ../DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+        tag: DBTestCompareGeneratorWindows_${{ env.dBTestCompareGeneratorVersion }}
+        name: "DBTestCompareGeneratorWindows Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
