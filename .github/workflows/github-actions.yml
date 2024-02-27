@@ -122,8 +122,6 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
-        tag: DBTestCompareGeneratorLinux_${{ env.dBTestCompareGeneratorVersion }}
-        name: "DBTestCompareGeneratorLinux Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
   BuildOnWindows:
@@ -151,7 +149,5 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
-        tag: DBTestCompareGeneratorWindows_${{ env.dBTestCompareGeneratorVersion }}
-        name: "DBTestCompareGeneratorWindows Version ${{ env.dBTestCompareGeneratorVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
