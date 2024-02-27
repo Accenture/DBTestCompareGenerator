@@ -84,7 +84,7 @@ jobs:
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
         /usr/bin/java -jar $DBTestCompare
         cd ../../../../
-        compress-archive -path "DBTestCompareGenerator" testt.zip
+        compress-archive -path ../DBTestCompareGenerator testt.zip
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
