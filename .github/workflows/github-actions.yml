@@ -84,11 +84,11 @@ jobs:
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
         /usr/bin/java -jar $DBTestCompare
         cd ../../../../
-        compress-archive -path ../DBTestCompareGenerator testt.zip
+        compress-archive -path ../DBTestCompareGenerator/Current ${{ github.run_id }}.zip
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
-        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./DBTestCompareGenerator
+        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./Current
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
@@ -117,6 +117,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+        name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}
     - name: Create Release
       uses: actions/create-release@v1
       env:
