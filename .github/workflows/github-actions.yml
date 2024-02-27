@@ -85,24 +85,15 @@ jobs:
         /usr/bin/java -jar $DBTestCompare
         cd ../../../../
         compress-archive -path ../DBTestCompareGenerator/Current ${{ github.run_id }}.zip
-    - name: Zip generated objects definition
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./Current
-    - name: Publish sql files
-      uses: actions/upload-artifact@v2
-      with:
-        path: testt.zip
-        name: definitions2
     - name: Publish sql files
       uses: actions/upload-artifact@v2
       with:
         path: ./DBTestCompareGenerator/${{ github.run_id }}.zip
-        name: definitionstest
+        name: definitions
     - name: Publish dacpack files
       uses: actions/upload-artifact@v2
       with:
-        path: ${{ github.workspace }}\Dacpac/${{ env.SQL_SERVERDBNAME }}.dacpac
+        path: ./Dacpac/${{ env.SQL_SERVERDBNAME }}.dacpac
         name: ${{ env.SQL_SERVERDBNAME }}
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
