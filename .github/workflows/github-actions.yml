@@ -53,7 +53,7 @@ jobs:
         rm -rfv LICENSE-3RD-PARTY
         rm -rfv LICENSE
         ./restore-backup.ps1
-    - name: set chmod run DBTestCompareGeneratorr 
+    - name: set chmod run DBTestCompareGenerator 
       shell: bash
       run: |
         cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
@@ -113,15 +113,11 @@ jobs:
         name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}
     - shell: pwsh
       run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
-    - name: check files
-      shell: bash
-      run: |
-        ls -alR
     - shell: bash
       run: |
         upload_url=$(curl -sL https://api.github.com/repos/Accenture/DBTestCompareGenerator/releases/latest | jq -r '.upload_url')
         echo UPLOAD_URL=$upload_url >> $GITHUB_ENV
-    - name: upload linux artifact
+    - name: Upload linux artifact to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -141,7 +137,7 @@ jobs:
         $tag = $tags[0]
         Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
       if: startsWith(github.ref, 'refs/tags/')
-    - name: release
+    - name: Create a new release
       uses: actions/create-release@v1
       id: create_release
       with:
@@ -162,7 +158,7 @@ jobs:
     - shell: powershell
       run: |
         compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
-    - name: upload linux artifact
+    - name: Upload windows artifact to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
