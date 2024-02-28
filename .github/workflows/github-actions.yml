@@ -117,10 +117,10 @@ jobs:
       shell: bash
       run: |
         ls -alR
-    - run:   |
-             upload_url=$(curl -sL https://api.github.com/repos/Accenture/DBTestCompareGenerator/releases/latest | jq -r '.upload_url')
-             echo UPLOAD_URL=$upload_url >> $GITHUB_ENV
-      shell: bash
+    - shell: bash
+      run: |
+        upload_url=$(curl -sL https://api.github.com/repos/Accenture/DBTestCompareGenerator/releases/latest | jq -r '.upload_url')
+        echo UPLOAD_URL=$upload_url >> $GITHUB_ENV
     - name: upload linux artifact
       uses: actions/upload-release-asset@v1
       env:
