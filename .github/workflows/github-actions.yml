@@ -1,0 +1,170 @@
+on:
+  push:
+    branches:
+    - '*'
+    paths-ignore:
+    - README.md
+    tags:
+    - '*'
+  schedule:
+  - cron: '0 18 * * 0'
+env:
+  solution: './DBTestCompareGenerator.sln'
+  buildPlatform: Any CPU
+  buildConfiguration: Release
+  dBTestCompareGeneratorVersion: 0.3.0
+  SQL_SERVER: localhost
+  SQL_SERVERINSTANCE: SQLEXPRESS
+  SQL_SERVERDBNAME: AdventureWorks2008R2
+  SQL_SERVER_USERNAME: sa
+  SQL_SERVER_PASSWORD: yourStrong22Password
+jobs:
+  BuildOnLinux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - shell: pwsh
+      run: |
+        $tags = git tag --sort=-creatordate   
+        $tag = $tags[0]
+        Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
+      if: startsWith(github.ref, 'refs/tags/')
+    - uses: nuget/setup-nuget@v1
+    - run: nuget restore ${{ env.solution }}
+    - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
+    - run: docker-compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
+    - name: download backup and jdbc drivers
+      shell: pwsh
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        ./download-backup-and-jdbc-drivers.ps1
+    - name: download latest release
+      shell: pwsh
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        echo ${{ github.run_number }}
+        ./download-latest-release.ps1
+    - name: restore backup
+      shell: pwsh
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        rm -rfv test-definitions
+        rm -rfv README.md
+        rm -rfv LICENSE-3RD-PARTY
+        rm -rfv LICENSE
+        ./restore-backup.ps1
+    - name: set chmod run DBTestCompareGenerator 
+      shell: bash
+      run: |
+        cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
+        find . -name '*-SNAPSHOT-jar-with-dependencies.jar' -exec mv {} ./ \;
+        chmod 777 ./DBTestCompareGenerator
+        chmod 777 "DBTestCompare-"*"-SNAPSHOT-jar-with-dependencies.jar"
+        ls -alR
+        ./DBTestCompareGenerator
+    - name: run DBTestCompare
+      shell: pwsh
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
+        $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
+        /usr/bin/java -jar $DBTestCompare
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: '**/TEST-*.xml'
+    - name: run DBTestCompare
+      shell: pwsh
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        ./set-appsettings.ps1 "./" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder|UnpackDacpac" "true|${{ github.workspace }}/Dacpac|${{ github.workspace }}/Current|true" $true
+        ./DBTestCompareGenerator
+        .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
+        $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
+        /usr/bin/java -jar $DBTestCompare
+    - name: Zip generated objects definition
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./Current
+    - name: Publish sql files
+      uses: actions/upload-artifact@v2
+      with:
+        path: ./DBTestCompareGenerator/${{ github.run_id }}.zip
+        name: definitions
+    - name: Publish dacpack files
+      uses: actions/upload-artifact@v2
+      with:
+        path: ./Dacpac/${{ env.SQL_SERVERDBNAME }}.dacpac
+        name: ${{ env.SQL_SERVERDBNAME }}
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: '**/TEST-*.xml'
+    - shell: pwsh
+      run: |
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        rm -rfv test-definitions zip deploy jdbc_drivers target test-output
+        rm -f *.bak *.jar *.log
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+        name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}
+    - shell: pwsh
+      run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+    - shell: bash
+      run: |
+        upload_url=$(curl -sL https://api.github.com/repos/Accenture/DBTestCompareGenerator/releases/latest | jq -r '.upload_url')
+        echo UPLOAD_URL=$upload_url >> $GITHUB_ENV
+    - name: Upload linux artifact to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ env.UPLOAD_URL }}
+        asset_path: ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+        asset_name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+        asset_content_type: application/zip
+      if: success() && startsWith(github.ref, 'refs/tags/')
+  BuildOnWindows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - shell: powershell
+      run: |
+        $tags = git tag --sort=-creatordate   
+        $tag = $tags[0]
+        Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
+      if: startsWith(github.ref, 'refs/tags/')
+    - name: Create a new release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: "Version ${{ env.dBTestCompareGeneratorVersion }}"
+        tag_name: ${{ github.ref }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      if: startsWith(github.ref, 'refs/tags/')
+    - uses: nuget/setup-nuget@v1
+    - run: nuget restore ${{ env.solution }}
+    - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
+        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+    - shell: powershell
+      run: |
+        compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+    - name: Upload windows artifact to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
+        asset_name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip
+        asset_content_type: application/zip
+      if: success() && startsWith(github.ref, 'refs/tags/')
