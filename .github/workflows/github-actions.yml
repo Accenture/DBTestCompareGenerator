@@ -13,7 +13,7 @@ env:
   solution: './DBTestCompareGenerator.sln'
   buildPlatform: Any CPU
   buildConfiguration: Release
-  dBTestCompareGeneratorVersion: 0.3.0
+  dBTestCompareGeneratorVersion: 0.4.0
   SQL_SERVER: localhost
   SQL_SERVERINSTANCE: SQLEXPRESS
   SQL_SERVERDBNAME: AdventureWorks2008R2
@@ -30,6 +30,17 @@ jobs:
         $tag = $tags[0]
         Write-Host "##vso[task.setvariable variable=dBTestCompareGeneratorVersion]$tag"
       if: startsWith(github.ref, 'refs/tags/')
+    - name: Create a new release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: "Version ${{ env.dBTestCompareGeneratorVersion }}"
+        tag_name: ${{ github.ref }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      if: startsWith(github.ref, 'refs/tags/')    
     - uses: nuget/setup-nuget@v1
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
