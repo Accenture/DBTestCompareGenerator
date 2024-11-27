@@ -18,7 +18,7 @@ do
 	  }
 }
 Until ($JSON.Status.ToString() -eq 'healthy')
-docker exec -i sqlserver-container /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "yourStrong22Password" `
+docker exec -i sqlserver-container /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "yourStrong(!)Password" `
 	-Q "RESTORE DATABASE AdventureWorks2008R2 FROM DISK = '/var/opt/mssql/backup/adventure-works-2008r2-oltp.bak' `
 	WITH MOVE 'AdventureWorks2008R2_Data' TO '/var/opt/mssql/data/AdventureWorks2008R2.mdf', `
 	MOVE 'AdventureWorks2008R2_Log' TO '/var/opt/mssql/data/AdventureWorks2008R2_1.LDF'"
