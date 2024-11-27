@@ -18,7 +18,7 @@ env:
   SQL_SERVERINSTANCE: SQLEXPRESS
   SQL_SERVERDBNAME: AdventureWorks2008R2
   SQL_SERVER_USERNAME: sa
-  SQL_SERVER_PASSWORD: yourStrong(!)Password
+  SQL_SERVER_PASSWORD: yourStrong22Password
 jobs:
   BuildOnLinux:
     runs-on: ubuntu-latest
