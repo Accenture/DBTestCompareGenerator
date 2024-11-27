@@ -10,12 +10,6 @@ services:
     volumes:
        - sqlserver_db_data_container:/var/opt/mssql
     ports:
-      - 1433:1433
-    healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "yourStrong(!)Password" -Q "SELECT 1" -b -o /dev/null
-      interval: 10s
-      timeout: 3s
-      retries: 10
-      start_period: 10s      
+      - 1433:1433   
 volumes:
   sqlserver_db_data_container:
