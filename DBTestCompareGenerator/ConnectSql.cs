@@ -19,11 +19,10 @@
 //     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //     SOFTWARE.
 // </license>
-
 namespace DBTestCompareGenerator
 {
     using System.Data;
-    using System.Data.SqlClient;
+    using Microsoft.Data.SqlClient;
 
     /// <summary>
     /// Class is used for execution SQL queries and reading data from database.
