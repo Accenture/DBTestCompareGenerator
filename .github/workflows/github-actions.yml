@@ -42,18 +42,18 @@ jobs:
     - name: download backup and jdbc drivers
       shell: pwsh
       run: |
-        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         ./download-backup-and-jdbc-drivers.ps1
     - name: download latest release
       shell: pwsh
       run: |
-        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         echo ${{ github.run_number }}
         ./download-latest-release.ps1
     - name: restore backup
       shell: pwsh
       run: |
-        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         rm -rfv test-definitions
         rm -rfv README.md
         rm -rfv LICENSE-3RD-PARTY
@@ -62,7 +62,7 @@ jobs:
     - name: set chmod run DBTestCompareGenerator 
       shell: bash
       run: |
-        cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0/
+        cd ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0/
         find . -name '*-SNAPSHOT-jar-with-dependencies.jar' -exec mv {} ./ \;
         chmod 777 ./DBTestCompareGenerator
         chmod 777 "DBTestCompare-"*"-SNAPSHOT-jar-with-dependencies.jar"
@@ -71,7 +71,7 @@ jobs:
     - name: run DBTestCompare
       shell: pwsh
       run: |
-        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
         /usr/bin/java -jar $DBTestCompare
@@ -83,7 +83,7 @@ jobs:
     - name: run DBTestCompare
       shell: pwsh
       run: |
-        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         ./set-appsettings.ps1 "./" "appsettings.json" "appSettings" "ReadExcelFile|DacpacFolder|Folder|UnpackDacpac" "true|${{ github.workspace }}/Dacpac|${{ github.workspace }}/Current|true" $true
         ./DBTestCompareGenerator
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
@@ -110,15 +110,15 @@ jobs:
         report_paths: '**/TEST-*.xml'
     - shell: pwsh
       run: |
-        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net6.0
+        cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         rm -rfv test-definitions zip deploy jdbc_drivers target test-output
         rm -f *.bak *.jar *.log
     - uses: actions/upload-artifact@v4
       with:
-        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0
         name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}
     - shell: pwsh
-      run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
+      run: compress-archive -path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0 ./DBTestCompareGenerator/DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}.zip
     - shell: bash
       run: |
         upload_url=$(curl -sL https://api.github.com/repos/Accenture/DBTestCompareGenerator/releases/latest | jq -r '.upload_url')
@@ -160,10 +160,10 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
-        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0
+        path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0
     - shell: powershell
       run: |
-        compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net6.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
+        compress-archive -Path ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0 -DestinationPath ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip 
     - name: 'Upload windows artifact to Release'
       run: gh release upload ${{ env.dBTestCompareGeneratorVersion }} ./DBTestCompareGenerator/DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}.zip      
       env:
