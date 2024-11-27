@@ -18,7 +18,7 @@ env:
   SQL_SERVERINSTANCE: SQLEXPRESS
   SQL_SERVERDBNAME: AdventureWorks2008R2
   SQL_SERVER_USERNAME: sa
-  SQL_SERVER_PASSWORD: yourStrong22Password
+  SQL_SERVER_PASSWORD: yourStrong(!)Password
 jobs:
   BuildOnLinux:
     runs-on: ubuntu-latest
@@ -33,10 +33,11 @@ jobs:
     - uses: nuget/setup-nuget@v1
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
-    - name: Install Docker Compose
+    - name: Install Docker Compose and build docker image
       run: |
         sudo apt-get update
         sudo apt-get install -y docker-compose
+        docker build -t my_sqlserver_image ./DBTestCompareGenerator/my_sqlserver
     - run: docker-compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
     - name: download backup and jdbc drivers
       shell: pwsh
