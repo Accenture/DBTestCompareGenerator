@@ -5,7 +5,7 @@ services:
     build: ./my_sqlserver
     container_name: sqlserver-container
     environment:
-        SA_PASSWORD: yourStrong22Password
+        SA_PASSWORD: yourStrong(!)Password
         ACCEPT_EULA: Y
     volumes:
        - sqlserver_db_data_container:/var/opt/mssql
