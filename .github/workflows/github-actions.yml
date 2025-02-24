@@ -30,11 +30,6 @@ jobs:
         $tag = $tags[0]
         echo "{dBTestCompareGeneratorVersion}={value}" >> "$tag"
       if: startsWith(github.ref, 'refs/tags/') 
-    - name: Set up JDK 8 
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
     - name: Install Docker Compose and build docker image
       run: |
@@ -77,7 +72,8 @@ jobs:
         cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
-        /usr/bin/java -jar $DBTestCompare
+        /usr/bin/java --version
+        /usr/bin/java --add-opens java.base/java.lang=ALL-UNNAMED -jar $DBTestCompare
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
       if: success() || failure()
@@ -91,7 +87,7 @@ jobs:
         ./DBTestCompareGenerator
         .\set-tokens-for-tests.ps1 -OutDir ".\test-definitions\" -FileType "cmpSqlResults-config.xml" -token "\$\{SQL_SERVER\}|\$\{SQL_SERVERDBNAME\}|\$\{SQL_SERVER_USERNAME\}|\$\{SQL_SERVER_PASSWORD\}" -Value "${{ env.SQL_SERVER }}|${{ env.SQL_SERVERDBNAME }}|${{ env.SQL_SERVER_USERNAME }}|${{ env.SQL_SERVER_PASSWORD }}"
         $DBTestCompare = (Resolve-Path ".\DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar").ToString()
-        /usr/bin/java -jar $DBTestCompare
+        /usr/bin/java --add-opens java.base/java.lang=ALL-UNNAMED -jar $DBTestCompare
     - name: Zip generated objects definition
       uses: montudor/action-zip@v0.1.0
       with:
