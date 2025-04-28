@@ -9,6 +9,8 @@
 
 Supported databases: **SQL Server**
 
+AI generated documentation [DeepWiki](https://deepwiki.com/Accenture/DBTestCompareGenerator)
+
 It reads the definition of tables to be tested from system tables of your database and generates tests which can be executed by [DBTestCompare](https://github.com/Accenture/DBTestCompare/wiki/Getting-started) application. 
 
 ```sql
