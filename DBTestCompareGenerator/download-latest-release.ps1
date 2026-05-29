@@ -1,5 +1,5 @@
-﻿# Download latest dotnet/codeformatter release from github
-$repo = "ObjectivityLtd/DBTestCompare"
+﻿# Download the latest DBTestCompare release from GitHub
+$repo = "Accenture/DBTestCompare"
 $filenamePattern = "DBTestCompare*.zip"
 $pathExtract = "./"
 
