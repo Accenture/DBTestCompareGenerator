@@ -26,9 +26,9 @@ jobs:
     - uses: actions/checkout@v4
     - shell: pwsh
       run: |
-        $tags = git tag --sort=-creatordate   
+        $tags = git tag --sort=-creatordate
         $tag = $tags[0]
-        echo "{dBTestCompareGeneratorVersion}={value}" >> "$tag"
+        echo "dBTestCompareGeneratorVersion=$tag" >> $env:GITHUB_ENV
       if: startsWith(github.ref, 'refs/tags/') 
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
     - name: Install Docker Compose and build docker image

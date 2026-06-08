@@ -13,8 +13,7 @@ namespace DBTestCompareGenerator
 
     public static class ReadConfigurationFromXlsx
     {
-        private static readonly NLog.Logger Logger =
-            NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static List<Dictionary<string, string>> ReadExcelFile()
         {
@@ -26,18 +25,26 @@ namespace DBTestCompareGenerator
             var sheetName = "ListOfTables";
             var path = $"{CopyConfigFiles.PathToCurrentFolder}{CopyConfigFiles.PathSeparator}Templates{CopyConfigFiles.PathSeparator}Table_Config.xlsx";
             Logger.Debug("Sheet {0} in file: {1}", sheetName, path);
-            XSSFWorkbook wb;
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-            {
-                wb = new XSSFWorkbook(fs);
-            }
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            using var wb = new XSSFWorkbook(fs);
 
             // get sheet
             var sh = (XSSFSheet)wb.GetSheet(sheetName);
+            if (sh == null)
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Sheet '{0}' not found in file {1}", sheetName, path));
+            }
+
             int startRow = 1;
             int startCol = 0;
             int totalRows = sh.LastRowNum;
-            int totalCols = sh.GetRow(0).LastCellNum;
+            var headerRow = sh.GetRow(0);
+            if (headerRow == null)
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Header row (row 0) missing in sheet '{0}' of file {1}", sheetName, path));
+            }
+
+            int totalCols = headerRow.LastCellNum;
             List<Dictionary<string, string>> configList = new List<Dictionary<string, string>>();
             var row = 1;
             for (int i = startRow; i <= totalRows; i++, row++)

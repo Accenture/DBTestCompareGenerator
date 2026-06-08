@@ -13,7 +13,7 @@ namespace DBTestCompareGenerator
     /// </summary>
     public static class TablesDefinitions
     {
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Get Tables Definitions.
