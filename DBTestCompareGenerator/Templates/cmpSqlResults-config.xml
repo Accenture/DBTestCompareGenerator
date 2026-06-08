@@ -33,16 +33,16 @@
         <datasource maxPollSize="6">
             <name>SQL_SERVER_Live</name>
             <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-			<!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>-->
-            <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME}</url>
+			<!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME};trustServerCertificate=true</url>-->
+            <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME};trustServerCertificate=true</url>
             <user>${SQL_SERVER_USERNAME}</user>
             <password>${SQL_SERVER_PASSWORD}</password>
         </datasource>
         <datasource maxPollSize="6">
           <name>SQL_SERVER_Branch</name>
           <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-          <!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>-->
-          <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME}</url>
+          <!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME};trustServerCertificate=true</url>-->
+          <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME};trustServerCertificate=true</url>
           <user>${SQL_SERVER_USERNAME}</user>
           <password>${SQL_SERVER_PASSWORD}</password>
         </datasource>

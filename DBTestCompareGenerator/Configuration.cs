@@ -24,7 +24,7 @@ namespace DBTestCompareGenerator
         /// <summary>
         /// NLog logger handle.
         /// </summary>
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Gets Connection String.
@@ -207,9 +207,18 @@ namespace DBTestCompareGenerator
             {
                 var columns = Configuration.Builder["appSettings:ColumnTypesToGroupBy"];
                 List<string> columnTypes = new List<string>();
+                if (string.IsNullOrWhiteSpace(columns))
+                {
+                    return columnTypes;
+                }
+
                 foreach (var column in columns.Split(","))
                 {
-                    columnTypes.Add(column);
+                    var trimmed = column.Trim();
+                    if (trimmed.Length > 0)
+                    {
+                        columnTypes.Add(trimmed);
+                    }
                 }
 
                 return columnTypes;
