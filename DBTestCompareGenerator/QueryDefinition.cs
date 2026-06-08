@@ -6,7 +6,7 @@ namespace DBTestCompareGenerator
 {
     public class QueryDefinition
     {
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public bool QueryAggregate { get; set; }
 

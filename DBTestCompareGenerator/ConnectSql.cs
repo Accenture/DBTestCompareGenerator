@@ -29,14 +29,15 @@ namespace DBTestCompareGenerator
     /// </summary>
     public static class ConnectSql
     {
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Method is used for execution SQL query (select) and reading each row from column.
         /// </summary>
         public static DataTable ExecuteSqlCommand(string command, string connectionString)
         {
-            Logger.Info($"connectionString {connectionString}");
+            var builder = new SqlConnectionStringBuilder(connectionString);
+            Logger.Info($"Connecting to data source '{builder.DataSource}', catalog '{builder.InitialCatalog}'");
             DataTable dataTable = new DataTable();
             using SqlConnection conn = new SqlConnection(connectionString);
             using var da = new SqlDataAdapter(command, conn);

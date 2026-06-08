@@ -10,7 +10,7 @@ namespace DBTestCompareGenerator
 
     internal static class CompareQuerySqlServer
     {
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void CreateCompareQuery(List<Dictionary<string, string>> configList)
         {
@@ -172,20 +172,19 @@ namespace DBTestCompareGenerator
                 QueryFetchLive = $"SELECT {Environment.NewLine}" +
                                  $" {aggregateByClause}{Environment.NewLine}" +
                                  $"FROM {Environment.NewLine}" +
-                                 $" {schema}.{table}",
+                                 $" [{schema}].[{table}]",
                 QueryFetchBranch = $"SELECT {Environment.NewLine}" +
                                    $" {aggregateByClause}{Environment.NewLine}" +
                                    $"FROM {Environment.NewLine}" +
-                                   $" {schema}.{table}",
+                                   $" [{schema}].[{table}]",
                 QueryMinusLive = $"SELECT {Environment.NewLine}" +
                                  $" {aggregateByClause}{Environment.NewLine}" +
-                                 $"FROM {Configuration.DBNameLiveMinusTests}.{schema}.{table}",
+                                 $"FROM {Configuration.DBNameLiveMinusTests}.[{schema}].[{table}]",
                 QueryMinusBranch = $"SELECT {Environment.NewLine}" +
                                  $" {aggregateByClause}{Environment.NewLine}" +
-                                 $"FROM {Configuration.DBNameBranchMinusTests}.{schema}.{table}",
+                                 $"FROM {Configuration.DBNameBranchMinusTests}.[{schema}].[{table}]",
             };
 
-            query.QueryMinusBranch = query.QueryMinusLive.Replace(Configuration.DBNameLiveMinusTests, Configuration.DBNameBranchMinusTests);
             query.QueryAggregate = true;
             query.ColumnName = "Aggregated";
             return query;
@@ -199,7 +198,7 @@ namespace DBTestCompareGenerator
                                  $" {columnList},{Environment.NewLine}" +
                                  $"count_big(*) AS CountNo {Environment.NewLine}" +
                                  $"FROM {Environment.NewLine}" +
-                                 $" {schema}.{table}{Environment.NewLine}" +
+                                 $" [{schema}].[{table}]{Environment.NewLine}" +
                                  $" {where}" +
                                  $"{Environment.NewLine}group by {columnList}{Environment.NewLine}" +
                                  $"{Environment.NewLine}order by {columnList};",
@@ -207,7 +206,7 @@ namespace DBTestCompareGenerator
                                    $" {columnList},{Environment.NewLine}" +
                                    $"count_big(*) AS CountNo {Environment.NewLine}" +
                                    $"FROM {Environment.NewLine}" +
-                                   $" {schema}.{table}{Environment.NewLine}" +
+                                   $" [{schema}].[{table}]{Environment.NewLine}" +
                                    $" {where}" +
                                    $"{Environment.NewLine}group by {columnList}{Environment.NewLine}" +
                                    $"{Environment.NewLine}order by {columnList};",
@@ -215,14 +214,14 @@ namespace DBTestCompareGenerator
                                  $" {columnList},{Environment.NewLine}" +
                                  $"count_big(*) AS CountNo {Environment.NewLine}" +
                                  $"FROM {Environment.NewLine}" +
-                                 $" {Configuration.DBNameLiveMinusTests}.{schema}.{table}{Environment.NewLine}" +
+                                 $" {Configuration.DBNameLiveMinusTests}.[{schema}].[{table}]{Environment.NewLine}" +
                                  $" {where}" +
                                  $"{Environment.NewLine}group by {columnList}{Environment.NewLine}",
                 QueryMinusBranch = $"SELECT {Environment.NewLine}" +
                                    $" {columnList},{Environment.NewLine}" +
                                    $"count_big(*) AS CountNo {Environment.NewLine}" +
                                    $"FROM {Environment.NewLine}" +
-                                   $" {Configuration.DBNameBranchMinusTests}.{schema}.{table}{Environment.NewLine}" +
+                                   $" {Configuration.DBNameBranchMinusTests}.[{schema}].[{table}]{Environment.NewLine}" +
                                    $" {where}" +
                                    $"{Environment.NewLine}group by {columnList}{Environment.NewLine}",
                 QueryAggregate = true,
@@ -239,27 +238,27 @@ namespace DBTestCompareGenerator
                 QueryFetchLive = $"SELECT {Environment.NewLine}" +
                                  $"{columnList}" +
                                  $"FROM {Environment.NewLine}" +
-                                 $" {schema}.{table}" +
+                                 $" [{schema}].[{table}]" +
                                  $"{addWhereClause} " +
                                  $"{addOrderByClause} ;" +
                                  $"{addComment} ",
                 QueryFetchBranch = $"SELECT {Environment.NewLine}" +
                                    $"{columnList}" +
                                    $"FROM {Environment.NewLine}" +
-                                   $" {schema}.{table}" +
+                                   $" [{schema}].[{table}]" +
                                    $"{addWhereClause} " +
                                    $"{addOrderByClause} ;" +
                                    $"{addComment} ",
                 QueryMinusLive = $"SELECT {Environment.NewLine}" +
                                  $"{columnList}" +
                                  $"FROM {Environment.NewLine}" +
-                                 $" {Configuration.DBNameLiveMinusTests}.{schema}.{table}" +
+                                 $" {Configuration.DBNameLiveMinusTests}.[{schema}].[{table}]" +
                                  $"{Environment.NewLine}{addWhereClause} " +
                                  $"{Environment.NewLine}{addComment} ",
                 QueryMinusBranch = $"SELECT {Environment.NewLine}" +
                                    $"{columnList}" +
                                    $"FROM {Environment.NewLine}" +
-                                   $" {Configuration.DBNameBranchMinusTests}.{schema}.{table}" +
+                                   $" {Configuration.DBNameBranchMinusTests}.[{schema}].[{table}]" +
                                    $"{Environment.NewLine}{addWhereClause} " +
                                    $"{Environment.NewLine}{addComment} ",
                 QueryAggregate = false,

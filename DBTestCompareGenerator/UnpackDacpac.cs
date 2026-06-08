@@ -1,4 +1,8 @@
-﻿namespace DBTestCompareGenerator
+﻿// <copyright file="UnpackDacpac.cs" company="Objectivity Bespoke Software Specialists">
+// Copyright (c) Objectivity Bespoke Software Specialists. All rights reserved.
+// </copyright>
+
+namespace DBTestCompareGenerator
 {
     using System;
     using System.IO;
@@ -9,7 +13,7 @@
 
     internal static class UnpackDacpac
     {
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void ExtractDacpacFile()
         {
@@ -162,11 +166,13 @@
                     }
                 }
                 else
+                {
                     Logger.Info($"{dbObject.ObjectType} - {dbObject.Name} could not be scripted");
+                }
             }
         }
 
-        static void SaveTextToFile(string text, string folder, string file)
+        private static void SaveTextToFile(string text, string folder, string file)
         {
             if (string.IsNullOrEmpty(file))
             {
@@ -195,7 +201,7 @@
             File.AppendAllText(Path.Combine(folder, file), text);
         }
 
-        static string SetType(string text)
+        private static string SetType(string text)
         {
             if (text.Equals("TableValuedFunction"))
             {
@@ -248,7 +254,7 @@
             return text;
         }
 
-        static string AlterToType(string text, string fileName, string script, out string file)
+        private static string AlterToType(string text, string fileName, string script, out string file)
         {
             file = fileName;
             if (text.Equals("PrimaryKeyConstraint"))
@@ -345,7 +351,7 @@
             return text;
         }
 
-        static string FindTableName(string text, string type)
+        private static string FindTableName(string text, string type)
         {
             Regex r = new Regex(@"[\[]?[a-zA-Z_0-9]+[\]]?\.[\[]?([a-zA-Z_0-9]+)[\]]?");
             foreach (Match m in r.Matches(text))
@@ -362,7 +368,7 @@
             return "NameOfTableNotFound";
         }
 
-        static bool CheckForEmptyLineAtEnd(string filePath)
+        private static bool CheckForEmptyLineAtEnd(string filePath)
         {
             using (StreamReader reader = new StreamReader(filePath))
             {

@@ -8,7 +8,7 @@ namespace DBTestCompareGenerator
 
     public static class CountQuerySqlServer
     {
-        private static readonly NLog.Logger Logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void CreateCountQuery(List<Dictionary<string, string>> configList)
         {
