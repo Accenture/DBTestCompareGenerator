@@ -31,12 +31,11 @@ jobs:
         echo "dBTestCompareGeneratorVersion=$tag" >> $env:GITHUB_ENV
       if: startsWith(github.ref, 'refs/tags/') 
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
-    - name: Install Docker Compose and build docker image
+    - name: Verify Docker Compose and build docker image
       run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
+        docker compose version
         docker build -t my_sqlserver_image ./DBTestCompareGenerator/my_sqlserver
-    - run: docker-compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
+    - run: docker compose -f "./DBTestCompareGenerator/docker-compose.yml" up -d
     - name: download backup and jdbc drivers
       shell: pwsh
       run: |
