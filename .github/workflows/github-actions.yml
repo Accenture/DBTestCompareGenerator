@@ -23,7 +23,7 @@ jobs:
   BuildOnLinux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - shell: pwsh
       run: |
         $tags = git tag --sort=-creatordate
@@ -130,7 +130,7 @@ jobs:
   BuildOnWindows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - shell: powershell
       run: |
         $tags = git tag --sort=-creatordate   
