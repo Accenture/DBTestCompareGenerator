@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A .NET 8 console application (single project, `DBTestCompareGenerator/`) that connects to a SQL Server database, reads table/column metadata from system tables, and **generates SQL test-definition files** consumed by the external Java tool [DBTestCompare](https://github.com/Accenture/DBTestCompare). It also has a secondary mode that extracts and unpacks a DACPAC (`.dacpac`) into per-object `.sql` scripts.
+A .NET 10 console application (single project, `DBTestCompareGenerator/`) that connects to a SQL Server database, reads table/column metadata from system tables, and **generates SQL test-definition files** consumed by the external Java tool [DBTestCompare](https://github.com/Accenture/DBTestCompare). It also has a secondary mode that extracts and unpacks a DACPAC (`.dacpac`) into per-object `.sql` scripts.
 
 The program produces files; it does not itself run the comparisons. There is no unit-test project — "tests" in this repo's vocabulary means the generated DBTestCompare definitions, which are executed downstream by the Java jar.
 
@@ -15,7 +15,7 @@ The program produces files; it does not itself run the comparisons. There is no 
 dotnet build DBTestCompareGenerator.sln --configuration Release
 
 # Run (working directory must contain appsettings.json + Templates/, i.e. the build output dir)
-cd .\DBTestCompareGenerator\bin\Release\net8.0
+cd .\DBTestCompareGenerator\bin\Release\net10.0
 .\DBTestCompareGenerator.exe        # Windows
 ./DBTestCompareGenerator            # Linux
 ```
