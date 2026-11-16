@@ -93,12 +93,12 @@ jobs:
       with:
         args: zip -r ./DBTestCompareGenerator/${{ github.run_id }}.zip ./Current
     - name: Publish sql files
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         path: ./DBTestCompareGenerator/${{ github.run_id }}.zip
         name: definitions
     - name: Publish dacpack files
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         path: ./Dacpac/${{ env.SQL_SERVERDBNAME }}.dacpac
         name: ${{ env.SQL_SERVERDBNAME }}
@@ -112,7 +112,7 @@ jobs:
         cd .\DBTestCompareGenerator\bin\${{ env.buildConfiguration }}\net8.0
         rm -rfv test-definitions zip deploy jdbc_drivers target test-output
         rm -f *.bak *.jar *.log
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0
         name: DBTestCompareGeneratorLinux${{ env.dBTestCompareGeneratorVersion }}
@@ -140,7 +140,7 @@ jobs:
     - uses: nuget/setup-nuget@v1
     - run: nuget restore ${{ env.solution }}
     - run: dotnet build --configuration ${{ env.buildConfiguration }} /p:Version=${{ env.dBTestCompareGeneratorVersion }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: DBTestCompareGeneratorWindows${{ env.dBTestCompareGeneratorVersion }}
         path: ./DBTestCompareGenerator/bin/${{ env.buildConfiguration }}/net8.0
